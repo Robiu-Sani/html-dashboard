@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Responsive Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome CDN for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      transition: 0.3s;
+    }
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    @media (min-width: 768px) {
+      .sidebar {
+        transform: translateX(0);
+      }
+    }
+    .fixed-header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 50;
+    }
+    .fixed-sidebar {
+      position: fixed;
+      top: 64px;
+      height: calc(100% - 64px);
+      z-index: 40;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navbar -->
+  <nav class="bg-blue-600 p-4 shadow-md flex justify-between items-center fixed-header">
+  <div class="text-white text-lg font-bold">Dashboard</div>
+  <div class="space-x-4 flex items-center gap-1">
+    <input type="text" placeholder="Search" class="p-2 rounded-md hidden md:inline-block" />
+    <div class="flex items-center">
+      <div class="bg-white text-blue-600 text-2xl flex justify-center items-center w-[40px] h-[40px] cursor-pointer rounded-full">
+        <i class="fas fa-user"></i>
+      </div>
+    </div>
+    <div class="flex justify-end items-end">
+      <button id="menuToggle" class="text-white text-2xl block md:hidden">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+
+  <div class="flex">
+    <!-- Sidebar -->
+<aside id="sidebar" class="sidebar sm:w-64 w-full bg-blue-800 text-white space-y-6 py-7 px-2 fixed-sidebar ">
+  <div class="text-center text-xl font-semibold">Admin Panel</div>
+  
+  <!-- Flex container to space between navigation and logout -->
+  <div class="flex flex-col justify-between h-full">
+    
+    <!-- Navigation Links -->
+    <nav>
+      <a href="#" class="block py-2 px-4 hover:bg-blue-700 rounded-md flex items-center">
+        <i class="fas fa-tachometer-alt mr-3"></i> <span>Dashboard</span>
+      </a>
+      <a href="#" class="block py-2 px-4 hover:bg-blue-700 rounded-md flex items-center">
+        <i class="fas fa-users mr-3"></i> <span>Users</span>
+      </a>
+      <a href="#" class="block py-2 px-4 hover:bg-blue-700 rounded-md flex items-center">
+        <i class="fas fa-cog mr-3"></i> <span>Settings</span>
+      </a>
+      <a href="#" class="block py-2 px-4 hover:bg-blue-700 rounded-md flex items-center">
+        <i class="fas fa-chart-line mr-3"></i> <span>Analytics</span>
+      </a>
+      <a href="#" class="block py-2 px-4 hover:bg-blue-700 rounded-md flex items-center">
+        <i class="fas fa-envelope mr-3"></i> <span>Messages</span>
+      </a>
+    </nav>
+
+    <!-- Logout Button at the Bottom -->
+    <div class="mt-auto mb-10">
+      <a href="#" class="block py-2 px-4 hover:bg-blue-500 bg-blue-600 rounded-md flex items-center justify-center">
+        <i class="fas fa-sign-out-alt mr-2"></i> <span>Logout</span>
+      </a>
+    </div>
+  </div>
+</aside>
+
+
+    <!-- Main Content -->
+    <div class="lg:ml-64 mt-20 p-6 w-full">
+      <h2 class="text-3xl font-semibold mb-6">Overview</h2>
+ <!-- More Information in the Dashboard -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <!-- Cards for Quick Overview -->
+        <!-- Total Users Card -->
+        <div class="bg-blue-50 p-4 shadow-md rounded-md">
+          <h3 class="text-xl font-semibold mb-2 flex items-center">
+            <i class="fas fa-users text-blue-600 mr-2"></i> Total Users
+          </h3>
+          <p class="text-gray-600">1,200 Active Users</p>
+        </div>
+
+        <!-- Monthly Revenue Card -->
+        <div class="bg-green-50 p-4 shadow-md rounded-md">
+          <h3 class="text-xl font-semibold mb-2 flex items-center">
+            <i class="fas fa-dollar-sign text-green-600 mr-2"></i> Monthly Revenue
+          </h3>
+          <p class="text-gray-600">$15,000</p>
+        </div>
+
+        <!-- New Sign-ups Card -->
+        <div class="bg-yellow-50 p-4 shadow-md rounded-md">
+          <h3 class="text-xl font-semibold mb-2 flex items-center">
+            <i class="fas fa-user-plus text-yellow-600 mr-2"></i> New Sign-ups
+          </h3>
+          <p class="text-gray-600">350 New Sign-ups</p>
+        </div>
+      </div>
+
+      <!-- Chart Section -->
+      <!-- <div class="bg-white p-6 shadow-md rounded-md mb-6">
+        <h3 class="text-xl font-semibold mb-4">User Activity Chart</h3>
+        <canvas id="userChart" width="400" height="200"></canvas>
+      </div> -->
+
+      <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center items-center">
+        <div class="bg-white w-full col-span-1 sm:col-span-2 p-6 shadow-md rounded-md mb-6">
+            <h3 class="text-xl font-semibold mb-4">User Activity Chart</h3>
+            <canvas id="userChart" width="400" height="200"></canvas>
+          </div>
+          <div class="bg-white w-full h-[calc(100%-20px)]  p-6 shadow-md rounded-md mb-6">
+            <h3 class="text-xl font-semibold mb-4">Pie Chart</h3>
+            <!-- Pie Chart Canvas -->
+            <canvas id="pieChart" width="400" height="200"></canvas>
+        </div>
+        
+      </div>
+
+      <!-- Responsive Table -->
+      <div class="flex my-2 justify-between items-center gap-3">
+        <h3 class="text-xl font-bold text-gray-700">Users Details</h3>
+        <button class="flex gap-2 justify-center items-center px-3 py-1 border rounded-md outline-none bg-white border-gray-300">
+          <i class="fas fa-filter text-gray-700"></i> Filter
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+  <table class="min-w-full bg-white">
+    <thead class="bg-gray-300 text-gray-600">
+      <tr>
+        <th class="min-w-1/4 px-4 py-2">Name</th>
+        <th class="min-w-1/4 px-4 py-2">Email</th>
+        <th class="min-w-1/4 px-4 py-2">Role</th>
+        <th class="min-w-1/4 px-4 py-2">Phone</th>
+        <th class="min-w-1/4 px-4 py-2">Join Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="bg-gray-100 border-b">
+        <td class="px-4 py-2 text-center">John Doe</td>
+        <td class="px-4 py-2 text-center">john@example.com</td>
+        <td class="px-4 py-2 text-center">Admin</td>
+        <td class="px-4 py-2 text-center">+123456789</td>
+        <td class="px-4 py-2 text-center">2023-01-15</td>
+      </tr>
+      <tr class="bg-gray-100 border-b">
+        <td class="px-4 py-2 text-center">Jane Smith</td>
+        <td class="px-4 py-2 text-center">jane@example.com</td>
+        <td class="px-4 py-2 text-center">Editor</td>
+        <td class="px-4 py-2 text-center">+987654321</td>
+        <td class="px-4 py-2 text-center">2022-09-30</td>
+      </tr>
+      <tr class="bg-gray-100 border-b">
+        <td class="px-4 py-2 text-center">Mark Johnson</td>
+        <td class="px-4 py-2 text-center">mark@example.com</td>
+        <td class="px-4 py-2 text-center">Subscriber</td>
+        <td class="px-4 py-2 text-center">+654321987</td>
+        <td class="px-4 py-2 text-center">2023-06-05</td>
+      </tr>
+      <tr class="bg-gray-100 border-b">
+        <td class="px-4 py-2 text-center">Emily White</td>
+        <td class="px-4 py-2 text-center">emily@example.com</td>
+        <td class="px-4 py-2 text-center">Admin</td>
+        <td class="px-4 py-2 text-center">+112233445</td>
+        <td class="px-4 py-2 text-center">2023-02-20</td>
+      </tr>
+      <tr class="bg-gray-100 border-b">
+        <td class="px-4 py-2 text-center">Michael Brown</td>
+        <td class="px-4 py-2 text-center">michael@example.com</td>
+        <td class="px-4 py-2 text-center">Editor</td>
+        <td class="px-4 py-2 text-center">+998877665</td>
+        <td class="px-4 py-2 text-center">2023-04-12</td>
+      </tr>
+      <tr class="bg-gray-100 border-b">
+        <td class="px-4 py-2 text-center">Sarah Green</td>
+        <td class="px-4 py-2 text-center">sarah@example.com</td>
+        <td class="px-4 py-2 text-center">Subscriber</td>
+        <td class="px-4 py-2 text-center">+443322110</td>
+        <td class="px-4 py-2 text-center">2023-07-18</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+    </div>
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+
+    // Toggle sidebar visibility on small screens
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+
+    // Chart.js initialization for the User Activity Chart
+    const ctx = document.getElementById('userChart').getContext('2d');
+    const userChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+        datasets: [{
+          label: 'User Activity',
+          data: [100, 200, 150, 300, 250, 400],
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 2,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+
+<script>
+    // Pie chart initialization
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    const pieChart = new Chart(pieCtx, {
+      type: 'pie',
+      data: {
+        labels: ['Admin', 'Editor', 'Subscriber'],
+        datasets: [{
+          label: 'User Roles',
+          data: [5, 10, 3], // Example data for different user roles
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          }
+        }
+      }
+    });
+  </script>
+  
+
+</body>
+</html>

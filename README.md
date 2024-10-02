@@ -1,1 +1,1 @@
-# html-dashboard
+<img src="/dashboard.png" />
